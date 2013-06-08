@@ -1,0 +1,5 @@
+c:\documents and settings\sandeep.jha\my documents\visual studio 2010\Projects\Zoomable_Sunburst_with_Labels\Zoomable_Sunburst_with_Labels\bin\Zoomable_Sunburst_with_Labels.dll
+c:\documents and settings\sandeep.jha\my documents\visual studio 2010\Projects\Zoomable_Sunburst_with_Labels\Zoomable_Sunburst_with_Labels\bin\Zoomable_Sunburst_with_Labels.pdb
+c:\documents and settings\sandeep.jha\my documents\visual studio 2010\Projects\Zoomable_Sunburst_with_Labels\Zoomable_Sunburst_with_Labels\obj\Debug\ResolveAssemblyReference.cache
+c:\documents and settings\sandeep.jha\my documents\visual studio 2010\Projects\Zoomable_Sunburst_with_Labels\Zoomable_Sunburst_with_Labels\obj\Debug\Zoomable_Sunburst_with_Labels.dll
+c:\documents and settings\sandeep.jha\my documents\visual studio 2010\Projects\Zoomable_Sunburst_with_Labels\Zoomable_Sunburst_with_Labels\obj\Debug\Zoomable_Sunburst_with_Labels.pdb

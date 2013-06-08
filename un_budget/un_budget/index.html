@@ -1,0 +1,521 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+<title>Programme budget for the biennium 2012-2013</title>
+<script type="text/javascript" src="js/d3/d3.min.js"></script>
+<script type="text/javascript" src="js/d3/d3.layout.js"></script>
+<script type="text/javascript" src="js/domext.js"></script>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript" src="js/dataarray.js"></script>
+<link rel="stylesheet" href="css/screen.css"/>
+<link rel="stylesheet" href="css/fullscreen.css"/>
+<style type="text/css"> 
+
+body {
+	font-family: helvetica, arial, sans-serif;
+}
+
+a {
+	color: black;
+}
+
+a:hover {
+	text-decoration: none;
+	color: red;
+}
+
+.container {
+	overflow: hidden;
+	position: relative;
+}
+
+#chart,
+#chartOp svg {
+	width: 948px;
+	height:768px;
+	position: relative;
+}
+
+#chart rect.bar {
+	fill: #5B92E5;
+}
+
+#chart rect.eu {
+	fill: url(#stripesPattern);
+}
+
+#chart text.label {
+	fill: #000000;	
+	cursor: pointer;	
+	font-weight: bold;	
+}
+
+#chart text.number {
+	fill: #777777;
+	cursor: pointer;	
+}
+
+#chart line {
+	stroke: #AAAAAA;
+	stroke-dasharray: 1 2;
+}
+
+#breadcrumbs {
+	position: absolute;
+	top: 100px;
+	left: 0;
+}
+
+#breadcrumbs a {
+	color: #AAAAAA;
+	display: block;
+	
+}
+
+#breadcrumbs a:hover {
+	color: #777777;
+	text-decoration: underline;
+}
+
+#chart g.in rect.bar {
+	fill: #6B92E5;
+}
+
+#chart g.in text.label {
+	fill: #646464;
+}
+
+#chart g.in text.number {
+	fill: #646464;
+}
+
+#chart g.in line {
+	stroke: #5B92E5;
+	stroke-dasharray: 2 2;
+}
+
+#chart g.out rect.bar {
+}
+
+#chart g.out text.label {
+}
+
+#chart g.out text.number {
+}
+
+#chart g.out line {
+}
+
+#footer {
+	margin-top: 5em;
+	color: #777777;
+}
+
+#footer a {
+	color: #000000;
+}
+
+#footer a:hover {
+	text-decoration: underline;
+}
+
+</style>
+</head>
+<body>    
+<div class="container">  
+	<div class="span-24 last">           
+		<h1><a href="javascript:document.location.href=document.location.href">Programme budget for the biennium 2012-2013</a></h1>
+		<h3>Budget appropriations for the biennium 2012-2013, by budget part and section<strong>(Millions of United States Dollars)</strong>.</h3>   	 		   
+		<div id="chartContainer">
+		</div>
+		<div id="breadcrumbs">
+		</div>
+	   	<script type="text/javascript"> 
+			var entryIdMap = {};
+			var entries = new DataArray();
+			var budget = { name: "Total Budget", entries:[] }; 
+			var selectedCategory; 
+			var chart;  
+			var w = 950;
+			var h = 600;   
+			
+			var dysponenci = [];
+			
+			var historyStack = [];
+			
+			function rebuildBreadcrumbs() {
+				var breadcrumbs = d3.select("#breadcrumbs");    
+				var breadcrumbsLinks = breadcrumbs.selectAll("a")
+					.data(historyStack);
+					
+				breadcrumbsLinks.enter()
+					.append("a")
+					.attr("href", function(d, i) {
+						return "javascript:goToBreadcrumb(" + i + ")";
+					})
+					.text(function(d) { return d.name + ""; })
+					
+				breadcrumbsLinks.exit()
+					.remove("")
+			}
+			
+			function goToBreadcrumb(i) {
+				var clicked = historyStack[i];				 
+				historyStack.splice(i, historyStack.length - i);
+				rebuildBreadcrumbs();
+				chart.selectAll("g").remove();
+				rebuildVis(clicked);
+			}
+			
+			function findMinScaleAndPad(n) {
+				if (n == 0) return 0;
+				
+				var scale = 1;
+				var result = 0;
+				
+				while(result == 0 && scale < 100000) {
+					scale *= 10;
+					result = Math.floor(n * scale);
+				}
+				
+				var scaleStr = "" + scale;
+				var resultStr = "" + result;
+				while(resultStr.length < scaleStr.length - 1) {
+					resultStr = "0" + resultStr;
+				}
+				return resultStr;
+			} 
+			
+			function numberToAmountStr(n) {
+				var normalized = 100*n/397504708000;
+				var zl = Math.floor(normalized);
+				var gr = findMinScaleAndPad(normalized - zl);
+				if (gr == 0) {
+					gr = Math.floor((normalized - zl)*1000);
+				}
+				var result = "";
+				if (zl > 0) {
+					result += zl + ",";
+				}
+				else {
+					result += "0,"
+				}
+				
+				if (gr > 0)	{
+					result += gr;
+				}
+				else {
+					result += "00001";					
+				}
+				
+				return result + " zl";
+			}
+			
+			function addToDysponent(name, value) {
+				for(var i=0; i<dysponenci.length; i++) {
+					if (dysponenci[i].name == name) {
+						dysponenci[i].value += value; 
+						return;
+					}
+				}
+				dysponenci.push({
+					name: name,
+					value: value
+				});
+			} 
+			
+			function init() {  
+				chart = d3.select("#chartContainer").append("svg:svg");    
+				var chartDefs = chart.append("svg:defs");	
+				var pattern = chartDefs.append("svg:pattern");
+				pattern.attr("patternUnits", "userSpaceOnUse");
+				pattern.attr("x", "0");				
+				pattern.attr("y", "0");
+				pattern.attr("width", "5");
+				pattern.attr("height", "5");
+				pattern.attr("id", "stripesPattern");
+				var patternPath = pattern.append("svg:path");
+				patternPath.attr("d", "M 0,0 0,1 1,1 1,0 0,0 z M 1,1 1,2 2,2 2,1 1,1 z M 2,2 2,3 3,3 3,2 2,2 z M 3,3 3,4 4,4 4,3 3,3 z m 1,1 0,1.0000001 1,0 L 5,4 4,4 z");
+				patternPath.attr("style", "fill:#000000;fill-opacity:1;stroke:none");
+				chart.attr("id", "chart");
+				d3.xhr("data/2011.csv", function(text) {  
+					var lines = text.responseText.split("\n");
+					for(var i in lines) {
+						var line = lines[i].replace(/"/g, '');  
+						if (!line) continue;   
+						if (i==0) continue;  //header
+						if (i==1) continue;  //total
+						var params = line.split(";");   
+						 
+						//function 22 is special
+						
+						var entry = {     
+					   		id: params[0],
+							parent: params[1],
+							level: params[2],
+							type: params[3],
+							name: params[4],
+							part: params[5],
+							v_total: Number(params[6]),
+							v_eu: params[7],
+							v_nation: params[8],
+							v_proc_eu: params[9],
+							v_proce_nation: params[10],	
+							entries: []		    			
+						}      
+					
+						entries.add(entry);            
+						
+						entryIdMap[entry.id] = entry;
+						if (entry.parent) {
+							entryIdMap[entry.parent].entries.push(entry);
+						}   
+						else {
+							budget.entries.push(entry);
+						}					
+				  	}     
+				
+					//funkcja
+					// zadanie
+					//  podzadanie                          
+					//   dysponent kwota czesc
+					
+					rebuildVis(budget);
+					
+			  	});	       
+			}   
+			
+			function rebuildVis(parent) {
+				historyStack.push(parent);
+				rebuildBreadcrumbs();
+				
+				var total = 0; 
+				parent.entries.forEach(function(funkcja) {    
+					total += funkcja.v_total;
+				});
+
+                //Change : width var totalWidth = 948;)
+				var totalWidth = 948; // 890
+				var minWidth = 1;	
+				var reminingWidth = totalWidth - parent.entries.length * minWidth - parent.entries.length;
+				var dx = 0;
+				var i = 0;
+				var barsDy = 300;
+				
+				var barGroup = chart.selectAll("rect.active")
+					.data(parent.entries)
+					.enter().append("svg:g")
+					.attr("transform", "translate(0, " + barsDy + ")");
+								
+				barGroup.append("svg:rect")
+					.attr("width", function(d) {
+					 	var w = minWidth + Math.round(reminingWidth * d.v_total / total);						 	
+						d.dx = dx;	
+						d.barWidth = w;					
+						dx += w + 1;
+					 	return w + "px"
+			})
+			//Change height :  (.attr("height", "256px"))
+					.attr("height", "256px") // 256px
+					.attr("x", function(d) {							
+						return d.dx + "px";
+					})
+					.attr("y", 0)
+					.attr("rx", 5)
+					.attr("ry", 5)						
+					.attr("class", "bar active");
+				
+				dx = 0;	
+				barGroup.append("svg:rect")
+					.attr("width", function(d) {
+					 	var w = minWidth + Math.round(reminingWidth * d.v_total / total);						 	
+						d.dx = dx;						
+						dx += w + 1;
+					 	return w + "px"
+					})
+					.attr("height", function(d) { return (256 * (1.0 - d.v_proce_nation/100)) + "px"; } )
+					.attr("x", function(d) {							
+						return d.dx + "px";
+					})
+					.attr("y", 0)
+					.attr("rx", 5)
+					.attr("ry", 5)						
+					.attr("class", "eu")
+					.style("fill-opacity", 0)
+					.transition().delay(100).duration(1000)
+						.style("fill-opacity", 1)
+					
+				barGroup.on('click', function(d, i) {
+						if (d.type == "Dysponent") {
+							d3.select(this.childNodes[0])
+								.style("fill-opacity", 0.25)
+								.transition()
+									.style("fill-opacity", 1.0)
+							return;
+						}
+						var groups = chart.selectAll("g");											
+						var clicked = this;												
+						var clickedGroupIndex = groups[0].indexOf(clicked);
+						chart.selectAll("rect.active").transition()								
+							.duration(750)
+							.delay(function() { return (this == clicked.childNodes[0]) ? 50 : 0})
+							.attr("x", function(d, i) { return (i <= clickedGroupIndex ? 0 : totalWidth) + "px";})
+							.attr("width", function() { return (this == clicked.childNodes[0]) ? (totalWidth) + "px" : "0px"})
+						chart.selectAll("rect.eu").transition()								
+							.duration(750)
+							.delay(function() { return (this == clicked.childNodes[1]) ? 50 : 0})
+							.attr("x", function(d, i) { return (i <= clickedGroupIndex ? 0 : totalWidth) + "px";})
+							.attr("width", function() { return (this == clicked.childNodes[1]) ? (totalWidth) + "px" : "0px"})
+							.each("end", function(d) {
+								chart.selectAll("rect.active")
+									.attr("class", "bar");									
+								if (this != clicked.childNodes[1]) {
+									d3.select(this.parentNode).remove();
+								}
+								else {									
+									d3.select(this.parentNode.childNodes[0]).transition()
+										.style("fill-opacity", 0);
+									d3.select(this.parentNode.childNodes[1]).transition()
+										.style("fill-opacity", 0)
+										.each("end", function() {
+											d3.select(this.parentNode).remove();
+										})
+									rebuildVis(d);
+								}															
+							})
+						chart.selectAll("text").transition()
+							.style("fill-opacity", 0)
+						chart.selectAll("line").transition()
+							.style("stroke-opacity", 0)
+				});
+				
+				barGroup.on('mouseover', function(d, i) {
+					var selected = this;
+					var groups = chart.selectAll("g");
+					groups.attr("class", function() {
+						return (this == selected) ? "in" : "out";
+					});
+					
+					var title = d3.select(selected.childNodes[2]);
+				});
+				
+				barGroup.on('mouseout', function(d, i) {
+					var groups = chart.selectAll("g");
+					groups.attr("class", "");
+				});
+				
+				var itemMarginX = 30;
+				var levelHeight = 40;				
+				var levelsAbove = [{y:-30, items:[]}];
+				var levelsBelow = [{y:285, items:[]}];
+				
+				function findNextTitleSpace(startX, endX, width, above) {
+					var levels = above ? levelsAbove : levelsBelow;
+					var ydirection = above ? -1 : 1;
+					var result = {x: 2000, y: 0};
+					var minX = Math.min(startX, totalWidth - width);
+					var maxX = Math.min(endX + width/2 - 5, totalWidth - width);
+					var found = false;
+					for(var l=0; l<levels.length; l++) {
+						var level = levels[l];
+						var currX = 0;					
+						for(var i=0; i<level.items.length; i++) {
+							var item = level.items[i];
+							currX = item.x + item.width + itemMarginX;
+							if (currX < minX) currX = minX;
+							if (currX >= minX && currX <= maxX) {
+								if (i < level.items.length - 1 && currX + width < level.items[i+1].x - itemMarginX) {
+									result.x = currX;
+									level.items.push({x:result.x, width:width})
+									found = true;
+								}
+							}
+						}
+											
+						if (!found && currX < maxX) {
+							result.x = Math.max(minX, currX);
+							level.items.push({x:result.x, width:width})
+							found = true;
+						}
+						
+						if (found) {
+							result.y = level.y;
+							break;
+						}
+						else {
+							//add new level if we reached the last one
+							if (l == levels.length - 1 && levels.length < 10) {
+								levels.push({y:level.y + ydirection * levelHeight, items:[]});
+							}
+						}
+					}
+					return result;
+				}
+			
+				var titleBelowAbove = -10;
+				var titleBelowDy = 280;
+				barGroup.append("svg:text") 
+					.text(function(d) {return d.name.replace(" ", " ")})
+					.attr("class", "label")					
+					.attr("y", function(d, i) {
+						var center = d.dx + d.barWidth/2;
+						var above = (i % 2 == 0);
+						d.linePos = [];
+						d.linePos.push({x:center.x, y: above ? -2 : 257});
+						var width = this.offsetWidth ? this.offsetWidth : this.getClientRects()[0].width;
+						d.titlePos = findNextTitleSpace(center - d.barWidth/2, center - width/2 + 5, width, above);
+						d.linePos.push({x:center.x, y: above ? d.titlePos.y + 16 : d.titlePos.y - 12});
+						return d.titlePos.y;						
+					})
+					.attr("x", function(d, i) {
+						return d.titlePos.x;
+					})
+					.style("fill-opacity", 0)
+					.transition()
+						.style("fill-opacity", 1);
+					barGroup.append("svg:text")
+					.text(function (d) {
+					    //Sandeep Jha : Change to Millions
+					    return ((d.v_total * 1000) / 1000000).toFixed(1);
+					    
+					})
+					.attr("class", "number")
+					.attr("y", function (d, i) {
+					    return d.titlePos.y + 12;
+					})
+					.attr("x", function (d, i) {
+					    return d.titlePos.x;
+					})
+					.style("fill-opacity", 0)
+					.transition()
+						.style("fill-opacity", 1);
+					
+				barGroup.append("svg:line")
+					.attr("x1", function(d) { return Math.floor(Math.max(d.dx, d.titlePos.x)) + 5.5; })
+					.attr("x2", function(d) { return Math.floor(Math.max(d.dx, d.titlePos.x)) + 5.5; })
+					.attr("y1", function(d) { return d.linePos[0].y; })
+					.attr("y2", function(d) { return d.linePos[1].y; })
+					.style("stroke-opacity", 0)
+					.transition()
+						.style("stroke-opacity", 1)
+				
+			}
+			
+			window.onload = init;
+  		
+		</script>  
+        <!--
+		<div id="footer">
+			<p>
+			<img src="css/stripes.png" align="middle"/> - wkład Unii Europejskiej
+			</p>
+			<p>
+			Wizualizacja "Otwarty budżet za 100zł" została przygotowana przez <a href="http://marcinignac.com">Marcina Ignaca</a> w oparciu
+			o <a href="http://otwartybudzet.pl/otwarte_dane.html">dane</a> zebrane na potrzeby konkursu <a href="http://otwartybudzet.pl/">Otwarty Budżet</a> realizowanego przez <a href="http://centrumcyfrowe.pl/">Centrum Cyfrowe</a>.
+			</p>
+		</div>-->
+	</div> 
+</div>
+</body>
+</html>

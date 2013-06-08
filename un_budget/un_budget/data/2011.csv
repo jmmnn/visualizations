@@ -1,0 +1,52 @@
+"id";"parent";"level";"type";"name";"part";"v_total";"v_eu";"v_nation";"v_proc_eu";"v_proc_nation"
+"total";"";"a";"SUMA";"Ogólem";"";5152299.6;4063618.69;1088680.90;21.13;78.87
+"1";"";"b";"Part I 1";"Overall policymaking, direction and coordination";"";721788.3;3897.65;717890.64;0;100
+"1-1";"1";"c";"Part I 1.1";"Overall policymaking, direction and coordination";"";105133.8;1051;95133.8;0;100
+"1-2";"1";"c";"Part I 1.2";"General Assembly and Economic and Social Council affairs and conference management";"";616654.5;6166;60654.5;0;100
+"2";"";"b";"Part II 2";"Political affairs";"";1333849.3;333849;1333849.3;0;100
+"2-1";"2";"c";"Part II 2.1";"Political affairs";"";1193700.8;193700.8;1093700.8;0;100
+"2-2";"2";"c";"Part II 2.2";"Disarmament";"";22422.0;193700.8;1093700.8;0;100
+"2-3";"2";"c";"Part II 2.3";"Peacekeeping operations";"";109725.1;193700.8;1093700.8;0;100
+"2-4";"2";"c";"Part II 2.4";"Peaceful uses of outer space";"";8001.4;193700.8;1093700.8;0;100
+"3";"";"b";"Part III 3";"International justice and law";"";93155.1;3155.1;90155.1;0;100
+"3-1";"3";"c";"Part III 3.1";"International Court of Justice";"";47766.4;2766.4;37766.4;0;100
+"3-2";"3";"c";"Part III 3.1";"Legal affairs";"";47766.4;2766.4;37766.4;20.49;79.51
+"4";"";"b";"Part IV 4";"International cooperation for development";"";436635.7;106635.7;336635.7;0;100
+"4-1";"4";"c";"Part IV 4.1";"Economic and social affairs";"";148979.3;48979.3;4897.3;0;100
+"4-2";"4";"c";"Part IV 4.2";"Least developed countries, landlocked developing countries and small island developing States";"";7264.9;48979.3;4897.3;0;100
+"4-3";"4";"c";"Part IV 4.3";"United Nations support for the New Partnership for Africa’s Development";"";12587.7;48979.3;4897.3;0;100
+"4-4";"4";"c";"Part IV 4.4";"Trade and development";"";136524.6;48979.3;4897.3;0;100
+"4-5";"4";"c";"Part IV 4.5";"Environment";"";41337.7;48979.3;4897.3;0;100
+"4-6";"4";"c";"Part IV 4.6";"Human settlements";"";13925.5;48979.3;4897.3;0;100
+"4-7";"4";"c";"Part IV 4.7";"Human settlements";"";20631.5;48979.3;4897.3;0;100
+"4-8";"4";"c";"Part IV 4.8";"International drug control, crime and terrorism prevention and criminal justice";"";40902.2;48979.3;4897.3;0;100
+"4-9";"4";"c";"Part IV 4.9";"UN-Women";"";14482.3;48979.3;4897.3;0;100
+"5";"";"b";"Part V 5";"Regional cooperation for development";"";532892.3;0;532892.3;0;100
+"5-1";"5";"c";"Part V 5.1";"Economic and social affairs";"";138308.3;0;138308;0;100
+"5-2";"5";"c";"Part V 5.2";"Economic and social development in Asia and the Pacific";"";98654.5;0;98654.5;0;100
+"5-3";"5";"c";"Part V 5.3";"Economic development in Europe";"";65247.2;0;65247.2;0;100
+"5-4";"5";"c";"Part V 5.4";"Economic and social development in Latin America and the Caribbean";"";110256.0;0;110256.0;0;100
+"5-5";"5";"c";"Part V 5.5";"Economic and social development in Western Asia";"";62646.7;0;62646.7;0;100
+"5-5";"5";"c";"Part V 5.6";"Regular programme of technical cooperation";"";57779.6;0;57779.6;0;100
+"6";"";"b";"Part VI 6";"Human rights and humanitarian affairs";"";326574.2;0;326574.2;0;100
+"6-1";"6";"c";"Part VI 6.1";"Human rights";"";154315.4;0;154315.4;0;100
+"6-2";"6";"c";"Part VI 6.2";"International protection, durable solutions and assistance to refugees";"";95507.1;0;95507.1;0;100
+"6-3";"6";"c";"Part VI 6.3";"Palestine refugees";"";47377.7;0;47377.7;0;100
+"6-4";"6";"c";"Part VI 6.4";"Humanitarian assistance";"";29374.0;0;29374.0;0;100
+"7";"";"b";"Part VII 7";"Public information";"";179092.1;0;179092.1;0;100
+"7-1";"7";"c";"Part VII 7.1";"Public information";"";179092.1;0;179092.1;0;100
+"8";"";"b";"Part VIII 8";"Common support services";"";600210.0;0;600210.0;0;100
+"8-1";"8";"c";"Part VIII 8.1";"Management and support services";"";600210.0;0;600210.0;0;100
+"9";"";"b";"Part IX 9";"Internal oversight";"";38254.2;0;38254.2;0;100
+"9-1";"9";"c";"Part IX 9.1";"Internal oversight";"";38254.2;0;38254.2;0;100
+"10";"";"b";"Part X 10";"Jointly financed administrative activities and special expenses";"";131219.1;0;131219.1;0;100
+"10-1";"10";"c";"Part X 10.1";"Jointly financed administrative activities";"";10762.4;0;10762.4;0;100
+"10-2";"10";"c";"Part X 10.2";"Special expenses";"";120456.7;0;120456.7;0;100
+"11";"";"b";"Part XI 11";"Capital expenditures";"";64886.9;0;64886.9;0;100
+"11-1";"11";"c";"Part XI 11.1";"Construction, alteration, improvement and major maintenance";"";64886.9;0;64886.9;0;100
+"12";"";"b";"Part XII 12";"Safety and security";"";213412.4;0;213412.4;0;100
+"12-1";"12";"c";"Part XII 12.1";"Safety and security";"";213412.4;0;213412.4;0;100
+"13";"";"b";"Part XII 13";"Development Account";"";29243.2;0;29243.2;0;100
+"13-1";"13";"c";"Part XIII 13.1";"Development Account";"";29243.2;0;29243.2;0;100
+"14";"";"b";"Part XIV 14";"Staff assessment";"";451086.8;0;451086.8;0;100
+"14-1";"14";"c";"Part XIV 14.1";"Staff assessment";"";451086.8;0;451086.8;0;100
